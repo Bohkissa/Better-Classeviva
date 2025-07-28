@@ -1,4 +1,4 @@
-# Better Extension Template
+# Better Classeviva
 
 Questa è una **bozza di base** per un'estensione browser (Chrome e Firefox) pensata per migliorare l'esperienza d'uso di un sito web specifico.  
 Il codice è strutturato per essere **facilmente adattabile** ad altri progetti: basta modificare il file `manifest.json` e i file JS/CSS di logica.
