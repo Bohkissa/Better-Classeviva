@@ -30,7 +30,6 @@ function syncIconWithStorage(){
   });
 }
 
-
 // cambia l'icona se il plugin e attivato o disattivato
 function updateIcon(isActive) {
   // in base allo stato del plugin definisco il percorso dell'icona
@@ -38,3 +37,18 @@ function updateIcon(isActive) {
   // passo il percorso per settare l'icona
   chrome.action.setIcon({ path: iconPath });
 }
+
+// Riceve il messaggio da settings.js e lo inoltra a tutte le tab
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === "TOGGLE_DEBUG") {
+    chrome.tabs.query({}, (tabs) => {
+      for (const tab of tabs) {
+        if (!tab.id) continue;
+        chrome.tabs.sendMessage(tab.id, {
+          type: "TOGGLE_DEBUG",
+          enabled: message.enabled
+        });
+      }
+    });
+  }
+});

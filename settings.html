@@ -3,30 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Impostazioni - Better Classeviva</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 15px;
-      max-width: 400px;
-    }
-    h1 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-    p {
-      margin-bottom: 5px;
-    }
-  </style>
+  <link href="css/settings.css" type="text/css" rel="stylesheet">
 </head>
 <body>
   <h1>Better Classeviva</h1>
   
-  <h2>Opzioni avanzate (presto disponibili)</h2>
+  <h2>Opzioni Tema</h2>
   <ul>
-    <li><label><input type="checkbox" disabled> Nascondi pubblicità</label></li>
     <li><label><input type="checkbox" disabled> Tema scuro (beta)</label></li>
   </ul>
 
+  <h2>Opzioni per sviluppatori</h2>
+  <ul>
+    <li><label><input type="checkbox" id="debugMode"> Debug Mode </label></li>
+  </ul>
 
   
   <p><strong>Versione:</strong> 1.0</p>
@@ -34,6 +24,9 @@
   <p><strong>Sito:</strong> <a href="https://balzanoconsulting.com" target="_blank">balzanoconsulting.com</a></p>
   <p>Questa estensione migliora l'interfaccia del portale web Classeviva.</p>
 
+
+  <!-- carico lo script alla fine -->
   <script src="js/settings.js"></script>
+
 </body>
 </html>

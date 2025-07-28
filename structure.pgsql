@@ -1,6 +1,8 @@
 BetterClasseviva/
 ├── css/
+│   ├── debug.css
 │   ├── popup.css
+│   ├── settings.css
 |   └── styles.css
 ├── fonts/
 |   └── TitilliumWeb-Regular.ttf

@@ -1,150 +1,148 @@
-function debugLog(message) {
-  const debugId = "better-classeviva-debug";
-  let debugBox = document.getElementById(debugId);
+// content.js
+const STYLE_ID = "better-classeviva-style";
+const DEBUG_ID = "better-classeviva-debug";
+let DEBUG_ENABLED = false;
 
-  if (!debugBox) {
-    debugBox = document.createElement("div");
-    debugBox.id = debugId;
-    debugBox.style.position = "fixed";
-    debugBox.style.bottom = "10px";
-    debugBox.style.right = "10px";
-    debugBox.style.zIndex = "999999";
-    debugBox.style.background = "rgba(0,0,0,0.7)";
-    debugBox.style.color = "#0f0";
-    debugBox.style.padding = "8px 12px";
-    debugBox.style.fontSize = "12px";
-    debugBox.style.fontFamily = "monospace";
-    debugBox.style.borderRadius = "8px";
-    debugBox.style.boxShadow = "0 0 6px #0f0";
-    document.body.appendChild(debugBox);
+initDebugState();
+initListeners();
+initializePluginState();
+
+function initDebugState() {
+  chrome.storage.local.get("debugMode", ({ debugMode }) => {
+    DEBUG_ENABLED = debugMode ?? false;
+    if (DEBUG_ENABLED) {
+      injectDebugCSS();
+      debugLog("Debug attivo all'avvio");
+    }
+  });
+}
+
+function initListeners() {
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.type === "TOGGLE_DEBUG") {
+      DEBUG_ENABLED = msg.enabled;
+      if (DEBUG_ENABLED) {
+        injectDebugCSS();
+        debugLog("Debug abilitato da messaggio");
+      } else {
+        removeDebugUI();
+      }
+    }
+
+    if (msg.type === "TOGGLE_PLUGIN") {
+      debugLog("Messaggio ricevuto: TOGGLE_PLUGIN = " + msg.active);
+      togglePlugin(msg.active);
+    }
+
+    if (msg.type === "CLEAR_DEBUG_LOG") {
+      clearDebugLog();
+    }
+  });
+}
+
+function initializePluginState() {
+  chrome.storage.local.get("pluginActive", (res) => {
+    const isActive = res.pluginActive ?? true;
+    debugLog("Stato iniziale plugin: " + isActive);
+    togglePlugin(isActive);
+  });
+}
+
+function debugLog(message) {
+  if (!DEBUG_ENABLED) return;
+
+  let box = document.getElementById(DEBUG_ID);
+  if (!box) {
+    box = document.createElement("div");
+    box.id = DEBUG_ID;
+    box.className = "debug-box";
+    document.body.appendChild(box);
   }
 
   const timestamp = new Date().toLocaleTimeString();
-  debugBox.innerText = `[${timestamp}] ${message}`;
+  const entry = document.createElement("div");
+  entry.textContent = `[${timestamp}] ${message}`;
+  box.appendChild(entry);
+
+  // Optional: logga anche in console
+  console.log("[BetterClasseviva Debug]", message);
 }
 
+function clearDebugLog() {
+  const box = document.getElementById(DEBUG_ID);
+  if (box) box.innerHTML = "";
+  debugLog("Log pulito");
+}
 
-//####################//
-// CONFIG E VARIABILI // 
-//####################//
+function injectDebugCSS() {
+  if (!document.getElementById("debug-css-link")) {
+    const link = document.createElement("link");
+    link.id = "debug-css-link";
+    link.href = chrome.runtime.getURL("css/debug.css");
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+  }
+}
 
-const STYLE_ID = "better-classeviva-style";
+function removeDebugUI() {
+  const box = document.getElementById(DEBUG_ID);
+  if (box) box.remove();
+}
 
-//##############//
-// GESTIONE CSS //
-//##############//
+function togglePlugin(isActive) {
+  debugLog("togglePlugin: " + isActive);
+  if (isActive) {
+    enablePluginFeatures();
+  } else {
+    disablePluginFeatures();
+  }
+}
 
-// inserisco forzatamente lo stile nel codice html
 function applyStyles() {
-  
-  // controllo in caso di refresh del plugin, 
-  // se già esiste il foglio di stile esco
-  if (document.getElementById(STYLE_ID)){
+  if (document.getElementById(STYLE_ID)) {
     debugLog("Stile già applicato");
     return;
   }
-
-  // creazione del tag link 
-  // <link href="css/styles.css" type="text/css" rel="stylesheet">
   const link = document.createElement("link");
   link.id = STYLE_ID;
   link.href = chrome.runtime.getURL("css/styles.css");
   link.type = "text/css";
   link.rel = "stylesheet";
   document.head.appendChild(link);
-
   debugLog("Stile applicato");
-
 }
 
-// rimuovo il foglio di stile 
 function removeStyles() {
-  const myStyle = document.getElementById(STYLE_ID);
-  if (myStyle) myStyle.remove();
-
-  console.log("Stile rimosso");
-
+  const link = document.getElementById(STYLE_ID);
+  if (link) link.remove();
+  debugLog("Stile rimosso");
 }
 
-//#######################//
-// GESTIONE STATO PLUGIN //
-//#######################//
-
-// Abilito/Disabilito le funzionalità
-function togglePlugin(isPluginActive) {
-  debugLog("togglePlugin: " + isPluginActive);
-  (isPluginActive) ? enablePluginFeatures() : disablePluginFeatures();
-}
-
-// Ascolto i messaggi in arrivo dal popup
-chrome.runtime.onMessage.addListener((msg) => {
-  // se arriva un messaggio di tipo "Toggle Plugin"
-  if (msg.type === "TOGGLE_PLUGIN") {
-    // lo passo direttamente alla funzione
-    debugLog("Messaggio ricevuto: TOGGLE_PLUGIN = " + msg.active);
-    togglePlugin(msg.active);
-  }
-});
-
-// Recupero lo stato del plugin
-chrome.storage.local.get("pluginActive", (res) => { 
-  const isActive = res.pluginActive ?? true;
-    // uso "true" come valore di default in caso di "null" o "undefined"
-  // Passo il valore alla funzione Toggle
-  debugLog("Stato iniziale plugin: " + isActive);
-  togglePlugin(isActive);
-});
-
-
-//######################//
-// MODIFICHE DOM CUSTOM //
-//######################//
-
-// Abilito le funzionalità del plugin
 function enablePluginFeatures() {
-  // applico lo stile
   applyStyles();
-  
-  // faccio partire gli script 
   customizeLoginPage();
-
 }
 
-// disabilito le funzionalità del plugin
 function disablePluginFeatures() {
-  // rimuovo il foglio di stile
   removeStyles();
-
-  // ... non c'è bisogno di disattivare o resettare gli script 
-  // dato che viene effettuato un refresh della pagina e tutto
-  // ritorna allo stato originale
-
+  // Refresh pagine non necessario; sarà gestito da settings.js se serve
 }
 
 function customizeLoginPage() {
+  if (!location.href.includes("login.php")) return;
 
-  const url = location.href; // prelevo l'url della pagina
-
-  if (!url.includes("login.php")) return; // eseguo questo script solo nella pagina del login
-
-  // Cambia logo
   const logoContainer = document.querySelector(".main-logo-container");
   if (logoContainer) {
     logoContainer.innerHTML = "";
-
     const img = document.createElement("img");
     img.src = chrome.runtime.getURL("images/better-classeviva-logo.png");
     img.alt = "Better Classeviva";
     img.style.maxWidth = "200px";
     img.style.height = "auto";
-
     logoContainer.appendChild(img);
   }
 
-  // Nascondi elementi non desiderati
   const prjDesc = document.querySelector(".prj-desc-container");
   if (prjDesc) prjDesc.remove();
-
-  // Altre modifiche future possono essere aggiunte qui
-  // ...
 }

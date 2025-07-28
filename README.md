@@ -1,17 +1,20 @@
-# Better Classeviva
+🚀 Better Classeviva - v0.2-beta
 
-Questa è una **bozza di base** per un'estensione browser (Chrome e Firefox) pensata per migliorare l'esperienza d'uso di un sito web specifico.  
-Il codice è strutturato per essere **facilmente adattabile** ad altri progetti: basta modificare il file `manifest.json` e i file JS/CSS di logica.
+Better Classeviva è un'estensione per browser (Chrome e Firefox) progettata per migliorare l’esperienza utente del portale Classeviva.  
+È ancora in fase di sviluppo e test (beta), ma include già funzionalità utili e un'architettura facilmente estendibile.
 
 ---
 
-## 🚀 Funzionalità principali
+## ✨ Funzionalità principali
 
-- Interfaccia popup con switch per attivare/disattivare il plugin
-- Pulsante per aggiornare manualmente il plugin
-- Accesso alla pagina delle impostazioni (nome, versione, autore, sito web)
-- Iniezione CSS/JS nel sito target
-- Compatibilità multipiattaforma (Chrome, Firefox)
+- ✅ **Attivazione/disattivazione del plugin** via popup
+- 🛠️ **Debug Mode** (visibile solo se attivato)
+- 🎯 **Iniezione di CSS personalizzati** per migliorare la UI
+- 🔄 **Modifica dinamica del logo nella pagina di login**
+- 🧠 **Stato persistente** con `chrome.storage.local`
+- 🛜 **Messaggistica tra background, popup e content script**
+- ⚙️ **Pagina impostazioni** (con info su plugin, autore, sito)
+- 🌐 **Compatibilità multipiattaforma** (Chrome e Firefox)
 
 ---
 
@@ -25,29 +28,67 @@ Il codice è strutturato per essere **facilmente adattabile** ad altri progetti:
 
 ---
 
-## 🛠️ Come adattare questa estensione al tuo progetto
+## 🧪 Installazione locale
 
-1. Modifica il file `manifest.json`:
-   - Cambia `name`, `description`, `version`, `author`
-   - Aggiorna il campo `host_permissions` con l’URL del tuo sito target
-
-2. Personalizza:
-   - `js/content.js`: logica da iniettare nel sito
-   - `css/style.css`: regole di stile da applicare
-
-3. Costruisci la tua UI nel file `popup.html` e `settings.html`
+1. Scarica o clona questo repository.
+2. Vai su:
+   - `chrome://extensions/` per Chrome
+   - `about:debugging#/runtime/this-firefox` per Firefox
+3. Attiva la **modalità sviluppatore**.
+4. Carica la cartella come **estensione non pacchettizzata**.
 
 ---
 
-## 🧪 Installazione locale
+## ⚙️ Come adattarla al tuo progetto
 
-1. Scarica o clona questo repository
-2. Vai su `chrome://extensions` o `about:debugging#/runtime/this-firefox`
-3. Attiva la modalità sviluppatore
-4. Carica la cartella come "Estensione non pacchettizzata"
+1. **Modifica `manifest.json`**:
+   - Cambia `name`, `description`, `version`, `author`
+   - Aggiorna `host_permissions` con l’URL del tuo sito target
+
+2. **Personalizza**:
+   - `js/content.js`: logica personalizzata da iniettare
+   - `css/styles.css`: modifica lo stile del sito target
+
+3. **Costruisci la tua UI**:
+   - `popup.html`: pannello principale utente
+   - `settings.html`: pagina impostazioni avanzate
+
+---
+
+## 🐞 Debug Mode
+
+- Attivabile dalla **pagina impostazioni**
+- Mostra una box in overlay sul sito target con log e messaggi temporali
+- Utile per il debug visivo durante lo sviluppo/test
+
+---
+
+## 🧾 Versioni
+
+| Versione    | Stato        | Descrizione breve                      |
+|-------------|--------------|----------------------------------------|
+| `v0.1-alpha`| 🧪 Sperimentale | Architettura iniziale, comunicazioni base |
+| `v0.2-beta` | 🔧 In sviluppo | Debug Mode, sincronizzazione icona, gestione stati |
+
+---
+
+## 📌 Roadmap (prossime funzionalità)
+
+- [ ] Supporto Temi (default/light/dark)
+- [ ] Modifiche grafica login
 
 ---
 
 ## 📄 Licenza
 
-Questo progetto è rilasciato sotto licenza MIT. Vedi `LICENSE` per i dettagli.
+Questo progetto è rilasciato sotto licenza **MIT**.  
+Consulta il file `LICENSE` per maggiori dettagli.
+
+---
+
+## 👨‍💻 Autore
+
+**Paolo Balzano**  
+💼 [balzanoconsulting.com](https://www.balzanoconsulting.com)  
+📧 info@balzanoconsulting.com  
+🧠 Progetto open-source pensato per migliorare un sistema chiuso.
